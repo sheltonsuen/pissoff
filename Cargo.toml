@@ -1,0 +1,17 @@
+[workspace]
+members = [
+  "crates/pissoff-hal",
+  "crates/pissoff-rp2040",
+  "firmware",
+]
+resolver = "2"
+
+[workspace.dependencies]
+rp2040-hal = { version = "0.12", features = ["rt", "critical-section-impl"] }
+rp2040-boot2 = "0.3"
+cortex-m = "0.7.7"
+cortex-m-rt = "0.7.5"
+defmt = "1.1"
+defmt-rtt = "1.2"
+panic-probe = { version = "1.0", features = ["print-defmt"] }
+embedded-hal = "1.0"
