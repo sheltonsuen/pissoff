@@ -14,7 +14,7 @@ A minimal bare-metal runtime OS for Raspberry Pi Pico W written in Rust. Designe
 - `pissoff-rp2040` — Pico W implementation of HAL traits
 - `firmware/` — entry point binary (blink LED to prove flashing works)
 - `memory.x` — linker script for RP2040 memory layout
-- `.cargo/config.toml` — target config, `probe-rs` as runner
+- `.cargo/config.toml` — target config, `picotool` as runner
 - Verify: `cargo run` flashes and blinks the onboard LED
 
 ### Phase 2: Core Runtime
@@ -72,7 +72,7 @@ Future BSP crates:
 - **WiFi Driver**: `cyw43` crate
 - **Networking**: `smoltcp` (TCP/IP stack)
 - **Logging**: `defmt` (embedded-friendly formatting)
-- **Flashing/Debug**: `probe-rs`
+- **Flashing**: `picotool` (USB bootloader)
 - **Linker**: `flip-link` (stack overflow protection)
 - **Build**: Cargo workspace
 
@@ -91,7 +91,8 @@ Future BSP crates:
 ### Prerequisites
 ```bash
 rustup target add thumbv6m-none-eabi
-cargo install probe-rs-tools flip-link
+cargo install flip-link
+# Install picotool from https://github.com/raspberrypi/pico-sdk-tools/releases
 ```
 
 ### Commands
@@ -99,7 +100,7 @@ cargo install probe-rs-tools flip-link
 # Build firmware
 cargo build
 
-# Flash and run on connected Pico W (via probe-rs)
+# Flash and run on connected Pico W (via picotool, requires BOOTSEL mode)
 cargo run
 
 # Host-side unit tests (for kernel logic, HAL trait tests)
@@ -114,15 +115,15 @@ cargo clippy
 
 ### Hardware Setup (Phase 1)
 - Connect Pico W via USB
-- Use SWD debug probe (e.g., picoprobe, J-Link) for `probe-rs` flashing
-- Alternatively, hold BOOTSEL and drag-and-drop UF2 (manual flash)
+- Hold BOOTSEL button while connecting to enter USB Bootloader mode
+- `cargo run` will compile and flash via `picotool`
 
 ## Current Milestone
 
 **Phase 1 — Flash to Pico + HAL Foundation**
 
 Success criteria:
-1. `cargo run` flashes firmware to Pico W via `probe-rs`
+1. `cargo run` flashes firmware to Pico W via `picotool` (USB BOOTSEL mode)
 2. Onboard LED blinks (proves GPIO HAL trait works)
 3. HAL traits defined: `GpioPin`, `OutputPin`, `InputPin`, `Delay`
 4. RP2040 implementation compiles and links correctly
